@@ -24,7 +24,7 @@ jobs:
 
         # Define your organization, repository, and team with its permission
         ORG="DevopsCyb"
-        REPO="WebAPiProject"
+        REPO="Demo" 
         TEAM="CTG-Team"
         PERMISSION="push"
 
