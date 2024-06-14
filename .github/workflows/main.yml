@@ -26,7 +26,7 @@ jobs:
         ORG="DevopsCyb"
         REPO="WebAPiProject" 
         TEAM="CTG-Team"
-        PERMISSION="pull"
+        PERMISSION="push"
 
       
         # Function to remove all permissions for a team from a repository
