@@ -31,10 +31,7 @@ jobs:
       
         # Grant new permission to the team for the repository
         echo "Granting $PERMISSION permission to team $TEAM for repository $REPO"
-        gh api -X PUT \
-          -H "Accept: application/vnd.github.v3+json" \
-          "/orgs/$ORG/teams/$TEAM/repos/$ORG/$REPO" \
-          -f permission="$PERMISSION"
+        gh api -X PUT "/orgs/$ORG/teams/$TEAM/repos/$ORG/$REPO" -f permission="$PERMISSION"
 
         echo "Permissions updated for $TEAM with $PERMISSION permission on the repository $REPO."
       env:
