@@ -3,7 +3,7 @@ name: Manage Team Permissions
 on:
   push:
     branches:
-      - main  # Trigger the workflow on push to the main 
+      - main  # Trigger the workflow on push to the main branch
 
 jobs:
   manage-permissions:
