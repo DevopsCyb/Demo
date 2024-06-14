@@ -16,7 +16,7 @@ jobs:
     - name: Set up GitHub CLI
       uses: wusatosi/setup-gh@v1.1
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_TOKEN }}
 
     - name: Run permission management script
       run: |
@@ -50,4 +50,4 @@ jobs:
 
         echo "Permissions updated for $TEAM with $PERMISSION permission on the repository $REPO."
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
