@@ -27,8 +27,8 @@ jobs:
 
     - name: Run GitHub Permissions Script
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-        GITHUB_ORG: ${{ secrets.GITHUB_ORG }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
+        GITHUB_ORG: ${{ secrets.GH_ORG }}
       run: |
         python github_permissions.py
