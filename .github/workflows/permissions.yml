@@ -2,9 +2,6 @@
 name: Manage GitHub Repo Permissions
 
 on:
-  push:
-    branches:
-      - main  # or the branch you want to trigger the workflow
   workflow_dispatch:  # allows manual triggering of the workflow
 
 jobs:
