@@ -1,22 +1,16 @@
 name: Azure DevOps Variable Groups
 
 on:
-  workflow_dispatch:  # Allows manual triggering of the workflow
-    inputs:
-      organization:  # Input for Azure DevOps organization name
-        description: 'Azure DevOps organization name'
-        required: true
-        default: 'cybagedevops'
-      project:  # Input for Azure DevOps project name
-        description: 'Azure DevOps project name'
-        required: true
-        default: 'MIS'
+  workflow_dispatch:  # Manual trigger
 
 jobs:
   list-variable-groups:
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Python
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
@@ -30,8 +24,8 @@ jobs:
         import requests
         import os
 
-        organization = "${{ github.event.inputs.organization }}"
-        project = "${{ github.event.inputs.project }}"
+        organization = "cybagedevops"  # Replace with your organization name
+        project = "MIS"           # Replace with your project name
 
         url = f"https://dev.azure.com/{organization}/{project}/_apis/distributedtask/variablegroups?api-version=6.0-preview.2"
 
@@ -49,3 +43,4 @@ jobs:
 
       env:
         AZURE_DEVOPS_EXT_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}  # Personal Access Token (PAT) with appropriate permissions
+
