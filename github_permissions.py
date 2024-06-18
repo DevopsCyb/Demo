@@ -2,7 +2,7 @@ import requests
 import os
 
 # Fetch GitHub token from environment variables
-token = os.getenv('GH_TOKEN')
+token = os.getenv('GITHUB_TOKEN')
 
 # Headers for authentication
 headers = {
@@ -38,8 +38,8 @@ def update_team_permissions(repo_name, org, team_slug, permission):
         print(f'Failed to update {team_slug} permissions for {repo_name}: {response.status_code} - {response.text}')
 
 # Fetch organization and username from environment variables
-org = os.getenv('GH_ORG')
-username = os.getenv('GH_USERNAME')
+org = os.getenv('GITHUB_ORG')
+username = os.getenv('GITHUB_USERNAME')
 
 # Fetch repositories and update permissions for each team
 repos = list_repos(username)
