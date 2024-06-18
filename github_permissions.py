@@ -12,8 +12,9 @@ headers = {
 
 # List of teams and their desired permissions
 teams_permissions = {
-    'CTG-Team': 'push'
+    'CTG-Team': 'push' ,
     # Add more teams as needed
+     'CTG-DevOps': 'admin'
 }
 
 def list_repos(username):
