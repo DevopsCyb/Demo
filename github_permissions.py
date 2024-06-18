@@ -13,7 +13,6 @@ headers = {
 # List of teams and their desired permissions
 teams_permissions = {
     'CTG-Team': 'push'
-   
     # Add more teams as needed
 }
 
@@ -28,6 +27,18 @@ def list_repos(username):
 
 def update_team_permissions(repo_name, org, team_slug, permission):
     url = f'https://api.github.com/orgs/{org}/teams/{team_slug}/repos/{repo_name}'
+    
+    # First, delete existing permissions by updating with an empty string
+    delete_response = requests.delete(url, headers=headers)
+    if delete_response.status_code == 204:
+        print(f'Deleted {team_slug} permissions for {repo_name}')
+    elif delete_response.status_code == 404:
+        print(f'No existing permissions found for {team_slug} on {repo_name}')
+    else:
+        print(f'Failed to delete {team_slug} permissions for {repo_name}: {delete_response.status_code} - {delete_response.text}')
+        return
+    
+    # Then, set new permissions
     data = {
         'permission': permission
     }
