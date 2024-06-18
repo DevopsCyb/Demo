@@ -1,0 +1,33 @@
+name: Azure DevOps Variable Groups
+
+on:
+  workflow_dispatch:  # Allows manual triggering of the workflow
+    inputs:
+      organization:  # Input for Azure DevOps organization name
+        description: 'Azure DevOps organization name'
+        required: true
+        default: 'cybagedevops'
+      project:  # Input for Azure DevOps project name
+        description: 'Azure DevOps project name'
+        required: true
+        default: 'MIS'
+
+jobs:
+  list-variable-groups:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Azure CLI
+      uses: azure/CLI@v1  # Use Azure CLI action
+
+    - name: Login to Azure DevOps
+      run: az devops login
+
+    - name: List Variable Groups
+      id: list-groups
+      run: |
+        az pipelines variable-group list --org $(inputs.organization) --project $(inputs.project) --query "[].{Name:name, ID:id}" -o table
+      env:
+        AZURE_DEVOPS_EXT_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}  # Personal Access Token (PAT) with appropriate permissions
+
+    - name: Print Variable Groups
+      run: echo "${{ steps.list-groups.outputs }}"
