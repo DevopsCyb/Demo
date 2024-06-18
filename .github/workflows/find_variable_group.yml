@@ -27,8 +27,8 @@ jobs:
         organization = "cybagedevops"  # Replace with your organization name
         project = "MIS"           # Replace with your project name
 
-        url = f"https://dev.azure.com/{organization}/{project}/_apis/distributedtask/variablegroups?api-version=6.0-preview.2"
-
+        url = f"https://dev.azure.com/{organization}/{project}/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"
+               
         headers = {
             "Authorization": f"Basic {os.environ['AZURE_DEVOPS_EXT_PAT']}",
             "Content-Type": "application/json"
