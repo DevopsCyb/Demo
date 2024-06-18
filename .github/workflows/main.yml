@@ -1,10 +1,10 @@
 name: Manage Team Permissions
 
-on:
-  push:
-    branches:
-      - main  
 
+
+on:
+  workflow_dispatch: 
+  
 jobs:
   manage-permissions:
     runs-on: ubuntu-latest
