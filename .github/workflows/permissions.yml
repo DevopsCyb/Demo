@@ -28,7 +28,7 @@ jobs:
     - name: Run GitHub Permissions Script
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        GITHUB_USERNAME: nileshv-cybage
+        GITHUB_USERNAME: DevopsCyb
         GITHUB_ORG: DevopsCyb
       run: |
         python github_permissions.py
