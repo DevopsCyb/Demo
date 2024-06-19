@@ -15,7 +15,7 @@ session = requests.Session()
 session.auth = HTTPBasicAuth('', pat)
 
 # Step 1: Get all pipelines
-pipelines_url = f"https://dev.azure.com/{organization}/{project}/_apis/pipelines?api-version=6.0-preview.1"
+pipelines_url = f"https://dev.azure.com/{organization}/{project}/_apis/pipelines?api-version=7.1-preview.1"
 pipelines_response = session.get(pipelines_url)
 pipelines_response.raise_for_status()  # Raise an error for bad status codes
 pipelines = pipelines_response.json().get('value', [])
@@ -26,7 +26,7 @@ pipelines_using_variable_group = []
 # Step 2: Get details for each pipeline
 for pipeline in pipelines:
     pipeline_id = pipeline['id']
-    pipeline_details_url = f"https://dev.azure.com/{organization}/{project}/_apis/pipelines/{pipeline_id}?api-version=6.0-preview.1"
+    pipeline_details_url = f"https://dev.azure.com/{organization}/{project}/_apis/pipelines/{pipeline_id}?api-version=7.1-preview.1"
     pipeline_details_response = session.get(pipeline_details_url)
     pipeline_details_response.raise_for_status()  # Raise an error for bad status codes
     pipeline_details = pipeline_details_response.json()
