@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import requests
 from yaml import safe_load
