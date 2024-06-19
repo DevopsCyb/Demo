@@ -25,6 +25,6 @@ jobs:
       env:
         AZURE_ORG: cybagedevops
         AZURE_PROJECT: MIS
-        AZURE_PAT: ${{ secrets.AZURE_PAT }}
+        AZURE_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
         VARIABLE_GROUP_NAME: MIS-DOCKER-NILESH
       run: python check_variable_group.py
