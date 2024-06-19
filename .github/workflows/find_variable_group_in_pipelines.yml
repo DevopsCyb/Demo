@@ -23,6 +23,6 @@ jobs:
       env:
         AZURE_DEVOPS_ORGANIZATION: cybagedevops
         AZURE_DEVOPS_PROJECT: MIS
-        AZURE_DEVOPS_PAT: ${{ secrets.AZURE_PAT }}
+        AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
         VARIABLE_GROUP_NAME: MIS-DOCKER-NILESH
       run: python find_variable_group_usage.py
