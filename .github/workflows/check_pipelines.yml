@@ -26,6 +26,6 @@ jobs:
       env:
         AZURE_DEVOPS_ORGANIZATION: cybagedevops
         AZURE_DEVOPS_PROJECT: MIS
-        AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+        AZURE_DEVOPS_PAT: ${{ secrets.AZURE_PAT }}
         VARIABLE_GROUP_ID: 98
       run: python check_pipelines.py
