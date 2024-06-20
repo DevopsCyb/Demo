@@ -32,7 +32,7 @@ def pipeline_uses_variable_group(pipeline):
     # Check variable groups in the YAML definition
     # Here, we assume the YAML is stored in the 'yaml' field of the response (this may vary)
     yaml_content = pipeline_details.get('yaml')
-    if yaml_content and f'group: {variable_group_id}' in yaml_content:
+    if yaml_content and f'variables:\n  - group: {variable_group_id}' in yaml_content:
         return True
 
     return False
