@@ -48,7 +48,8 @@ def main():
 
     print(f'Pipelines using variable group {variable_group_id}:')
     for pipeline in pipelines_using_variable_group:
-        print(f"- {pipeline['name']} (ID: {pipeline['id']})")
+        print(f"- Pipeline ID: {pipeline['id']}")
 
 if __name__ == "__main__":
     main()
+
