@@ -22,15 +22,9 @@ pipelines = pipelines_response.json().get('value', [])
 # Step 2: Print details for each pipeline
 for pipeline in pipelines:
     pipeline_id = pipeline['id']
-    pipeline_name = pipeline['name']
-    repository_name = pipeline['repository']['name']
-    pipeline_url = pipeline['_links']['web']['href']
+    
 
     print(f"Pipeline ID: {pipeline_id}")
-    print(f"Name: {pipeline_name}")
-    
-    print(f"Repository Name: {repository_name}")
-    print(f"Pipeline URL: {pipeline_url}")
     print("-" * 30)
 
 # Optionally, you can perform further actions with these pipelines if needed.
