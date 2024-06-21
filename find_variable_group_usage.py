@@ -1,10 +1,9 @@
-#!/usr/bin/env python
 import requests
 import os
 
 # Azure DevOps organization and project details
-organization = 'cybagedevops'
-project = 'MIS'
+organization = os.getenv('AZURE_DEVOPS_ORGANIZATION')
+project = os.getenv('AZURE_DEVOPS_PROJECT')
 base_url = f'https://dev.azure.com/{organization}/{project}/_apis'
 
 # Personal Access Token (PAT) from environment variable
@@ -18,9 +17,14 @@ headers = {
     'Content-Type': 'application/json'
 }
 
+# Debug statements
+print(f"Requesting URL: {url}")
+print(f"Headers: {headers}")
+
 # Send GET request to Azure DevOps REST API
 response = requests.get(url, headers=headers)
 
+# Check response status and handle accordingly
 if response.status_code == 200:
     pipelines = response.json()['value']
     for pipeline in pipelines:
@@ -28,3 +32,4 @@ if response.status_code == 200:
         print(f"Pipeline Name: {pipeline_name}")
 else:
     print(f"Failed to retrieve pipelines. Status code: {response.status_code}")
+    print(f"Response content: {response.text}")  # Print response content for further details
