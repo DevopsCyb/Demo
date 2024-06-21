@@ -6,7 +6,7 @@ organization = 'cybagedevops'
 project = 'MIS'
 
 # Replace with your Personal Access Token (PAT)
-personal_access_token = 'f4l3pja4ahyhkstxskzbknxr5ysazo3p5y4kniithfhmhkte5i5a'
+personal_access_token = ''
 
 # Base URL for Azure DevOps REST API
 base_url = f'https://dev.azure.com/{organization}/{project}/_apis/pipelines'
