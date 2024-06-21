@@ -1,73 +1,64 @@
 import requests
-import os
-import base64
-import yaml
+from requests.auth import HTTPBasicAuth  # Basic authentication
 
-# Fetch environment variables
-organization = os.getenv('AZURE_DEVOPS_ORGANIZATION')
-project = os.getenv('AZURE_DEVOPS_PROJECT')
-pat = os.getenv('AZURE_DEVOPS_PAT')
+# Replace with your Azure DevOps organization URL and project name
+organization = 'cybagedevops'
+project = 'MIS'
 
-# Check if environment variables are set
-if not organization or not project or not pat:
-    print("Environment variables AZURE_DEVOPS_ORGANIZATION, AZURE_DEVOPS_PROJECT, or AZURE_DEVOPS_PAT are not set.")
-    exit(1)
+# Replace with your Personal Access Token (PAT)
+personal_access_token = 'f4l3pja4ahyhkstxskzbknxr5ysazo3p5y4kniithfhmhkte5i5a'
 
 # Base URL for Azure DevOps REST API
-base_url = f'https://dev.azure.com/{organization}/{project}/_apis'
+base_url = f'https://dev.azure.com/{organization}/{project}/_apis/pipelines'
 
-# Encode PAT for Basic Auth
-encoded_pat = base64.b64encode(f':{pat}'.encode()).decode()
-
-# Endpoint to list pipelines
-pipelines_url = f"{base_url}/pipelines?api-version=6.0-preview.1"
-
+# Define headers and authentication
 headers = {
-    'Authorization': f'Basic {encoded_pat}',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Authorization': f'Basic {personal_access_token}'
 }
 
-# Debugging: Print request details
-print(f"Requesting URL: {pipelines_url}")
-print(f"Headers: {headers}")
+# Function to fetch all pipelines
+def get_all_pipelines():
+    pipelines_url = f'{base_url}?api-version=6.0'
+    response = requests.get(pipelines_url, headers=headers)
 
-# Send GET request to Azure DevOps REST API to list pipelines
-response = requests.get(pipelines_url, headers=headers)
-
-def get_pipeline_variable_groups(pipeline_id):
-    # URL to get pipeline definition YAML
-    pipeline_def_url = f"{base_url}/pipelines/{pipeline_id}/yaml?api-version=6.0-preview.1"
-    response = requests.get(pipeline_def_url, headers=headers)
     if response.status_code == 200:
-        pipeline_yaml = response.text
-        pipeline_dict = yaml.safe_load(pipeline_yaml)
-        variable_groups = []
-        if 'variables' in pipeline_dict:
-            for var in pipeline_dict['variables']:
-                if 'group' in var:
-                    variable_groups.append(var['group'])
-        return variable_groups
-    return []
-
-# Check response status and handle accordingly
-if response.status_code == 200:
-    pipelines = response.json().get('value', [])
-    if not pipelines:
-        print("No pipelines found.")
+        pipelines_data = response.json()
+        return pipelines_data['value']
     else:
-        for pipeline in pipelines:
-            pipeline_id = pipeline.get('id')
-            pipeline_name = pipeline.get('name')
-            folder_path = pipeline.get('folder', '')
-            variable_groups = get_pipeline_variable_groups(pipeline_id)
-            print(f"Pipeline Name: {pipeline_name}")
-            print(f"  ID: {pipeline_id}")
-            print(f"  Folder Path: {folder_path}")
-            if variable_groups:
-                print(f"  Variable Groups: {', '.join(variable_groups)}")
-            else:
-                print("  No Variable Groups associated.")
-            print()  # Print an empty line for better readability
-else:
-    print(f"Failed to retrieve pipelines. Status code: {response.status_code}")
-    print(f"Response content: {response.text}")  # Print response content for further details
+        print(f"Failed to fetch pipelines: {response.status_code} - {response.text}")
+        return []
+
+# Function to print pipeline details
+def print_pipeline_details(pipeline):
+    print(f"Pipeline ID: {pipeline['id']}")
+    print(f"Name: {pipeline['name']}")
+    print(f"Description: {pipeline['description']}")
+    print(f"URL: {pipeline['_links']['web']['href']}")
+    print(f"Trigger Type: {pipeline['trigger']['type']}")
+    print("Trigger Branch Filters:", pipeline['trigger']['branchFilters'])
+    print("Variables:")
+    for variable in pipeline['variables']:
+        print(f"  {variable['name']}: {variable['value']}")
+    print("Stages:")
+    for stage in pipeline['stages']:
+        print(f"  Stage Name: {stage['name']}")
+        print("  Jobs:")
+        for job in stage['jobs']:
+            print(f"    Job Name: {job['name']}")
+            print(f"    Status: {job['status']}")
+            print(f"    Start Time: {job['startTime']}")
+            print(f"    End Time: {job['endTime']}")
+            print("    Tasks:")
+            for task in job['tasks']:
+                print(f"      Task Name: {task['name']}")
+                print(f"      Status: {task['status']}")
+                print(f"      Start Time: {task['startTime']}")
+                print(f"      End Time: {task['endTime']}")
+    print("")
+
+# Main script
+if __name__ == "__main__":
+    pipelines = get_all_pipelines()
+    for pipeline in pipelines:
+        print_pipeline_details(pipeline)
