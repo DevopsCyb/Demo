@@ -1,28 +1,31 @@
-name: Find Variable Group Usage
+name: Demo
 
 on:
-  workflow_dispatch:
+   workflow_dispatch:
 
 jobs:
-  find-variable-group-usage:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.x
+        python-version: '3.x'
 
     - name: Install dependencies
-      run: pip install requests
+      run: |
+        python -m pip install --upgrade pip
+        pip install PyYAML
+        pip install requests
 
-    - name: Run find_variable_group_usage.py
+    - name: Run the script
+      run: |
+        python find_variable_group_usage.py
       env:
         AZURE_DEVOPS_ORGANIZATION: cybagedevops
         AZURE_DEVOPS_PROJECT: MIS
         AZURE_DEVOPS_PAT: ${{ secrets.AZURE_PAT }}
-        VARIABLE_GROUP_NAME: MIS-DB-NILESH
-      run: python find_variable_group_usage.py
