@@ -58,12 +58,16 @@ if response.status_code == 200:
         for pipeline in pipelines:
             pipeline_id = pipeline.get('id')
             pipeline_name = pipeline.get('name')
+            folder_path = pipeline.get('folder', '')
             variable_groups = get_pipeline_variable_groups(pipeline_id)
             print(f"Pipeline Name: {pipeline_name}")
+            print(f"  ID: {pipeline_id}")
+            print(f"  Folder Path: {folder_path}")
             if variable_groups:
                 print(f"  Variable Groups: {', '.join(variable_groups)}")
             else:
                 print("  No Variable Groups associated.")
+            print()  # Print an empty line for better readability
 else:
     print(f"Failed to retrieve pipelines. Status code: {response.status_code}")
     print(f"Response content: {response.text}")  # Print response content for further details
