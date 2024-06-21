@@ -19,7 +19,7 @@ base_url = f'https://dev.azure.com/{organization}/{project}/_apis'
 encoded_pat = base64.b64encode(f':{pat}'.encode()).decode()
 
 # Endpoint to list pipelines
-url = f"{base_url}/pipelines?api-version=6.0-preview.1"
+pipelines_url = f"{base_url}/pipelines?api-version=6.0-preview.1"
 
 headers = {
     'Authorization': f'Basic {encoded_pat}',
@@ -27,11 +27,27 @@ headers = {
 }
 
 # Debugging: Print request details
-print(f"Requesting URL: {url}")
+print(f"Requesting URL: {pipelines_url}")
 print(f"Headers: {headers}")
 
-# Send GET request to Azure DevOps REST API
-response = requests.get(url, headers=headers)
+# Send GET request to Azure DevOps REST API to list pipelines
+response = requests.get(pipelines_url, headers=headers)
+
+def get_pipeline_variable_groups(pipeline_id):
+    # URL to get pipeline definition
+    pipeline_def_url = f"{base_url}/pipelines/{pipeline_id}/runs?api-version=6.0-preview.1"
+    response = requests.get(pipeline_def_url, headers=headers)
+    if response.status_code == 200:
+        runs = response.json().get('value', [])
+        if runs:
+            latest_run_id = runs[0]['id']
+            pipeline_run_url = f"{base_url}/pipelines/{pipeline_id}/runs/{latest_run_id}?api-version=6.0-preview.1"
+            response = requests.get(pipeline_run_url, headers=headers)
+            if response.status_code == 200:
+                pipeline_run = response.json()
+                variable_groups = pipeline_run.get('variables', {})
+                return [group for group in variable_groups.keys()]
+    return []
 
 # Check response status and handle accordingly
 if response.status_code == 200:
@@ -40,8 +56,14 @@ if response.status_code == 200:
         print("No pipelines found.")
     else:
         for pipeline in pipelines:
+            pipeline_id = pipeline.get('id')
             pipeline_name = pipeline.get('name')
+            variable_groups = get_pipeline_variable_groups(pipeline_id)
             print(f"Pipeline Name: {pipeline_name}")
+            if variable_groups:
+                print(f"  Variable Groups: {', '.join(variable_groups)}")
+            else:
+                print("  No Variable Groups associated.")
 else:
     print(f"Failed to retrieve pipelines. Status code: {response.status_code}")
     print(f"Response content: {response.text}")  # Print response content for further details
