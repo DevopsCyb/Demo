@@ -1,6 +1,7 @@
 import requests
 import os
 import base64
+import yaml
 
 # Fetch environment variables
 organization = os.getenv('AZURE_DEVOPS_ORGANIZATION')
@@ -34,19 +35,18 @@ print(f"Headers: {headers}")
 response = requests.get(pipelines_url, headers=headers)
 
 def get_pipeline_variable_groups(pipeline_id):
-    # URL to get pipeline definition
-    pipeline_def_url = f"{base_url}/pipelines/{pipeline_id}/runs?api-version=6.0-preview.1"
+    # URL to get pipeline definition YAML
+    pipeline_def_url = f"{base_url}/pipelines/{pipeline_id}/yaml?api-version=6.0-preview.1"
     response = requests.get(pipeline_def_url, headers=headers)
     if response.status_code == 200:
-        runs = response.json().get('value', [])
-        if runs:
-            latest_run_id = runs[0]['id']
-            pipeline_run_url = f"{base_url}/pipelines/{pipeline_id}/runs/{latest_run_id}?api-version=6.0-preview.1"
-            response = requests.get(pipeline_run_url, headers=headers)
-            if response.status_code == 200:
-                pipeline_run = response.json()
-                variable_groups = pipeline_run.get('variables', {})
-                return [group for group in variable_groups.keys()]
+        pipeline_yaml = response.text
+        pipeline_dict = yaml.safe_load(pipeline_yaml)
+        variable_groups = []
+        if 'variables' in pipeline_dict:
+            for var in pipeline_dict['variables']:
+                if 'group' in var:
+                    variable_groups.append(var['group'])
+        return variable_groups
     return []
 
 # Check response status and handle accordingly
