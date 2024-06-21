@@ -1,30 +1,30 @@
 #!/usr/bin/env python
-
 import requests
-from requests.auth import HTTPBasicAuth
 import os
 
-# Fetch required values from environment variables
-organization = os.getenv('AZURE_DEVOPS_ORGANIZATION')
-project = os.getenv('AZURE_DEVOPS_PROJECT')
-pat = os.getenv('AZURE_DEVOPS_PAT')
+# Azure DevOps organization and project details
+organization = 'cybagedevops'
+project = 'MIS'
+base_url = f'https://dev.azure.com/{organization}/{project}/_apis'
 
-# Create a session with authentication
-session = requests.Session()
-session.auth = HTTPBasicAuth('', pat)
+# Personal Access Token (PAT) from environment variable
+token = os.getenv('AZURE_DEVOPS_PAT')  # Ensure this token has appropriate permissions
 
-# Step 1: Get all pipelines
-pipelines_url = f"https://dev.azure.com/{organization}/{project}/_apis/pipelines?api-version=7.1-preview.1"
-pipelines_response = session.get(pipelines_url)
-pipelines_response.raise_for_status()  # Raise an error for bad status codes
-pipelines = pipelines_response.json().get('value', [])
+# Endpoint to list pipelines
+url = f"{base_url}/pipelines?api-version=6.0-preview.1"
 
-# Step 2: Print details for each pipeline
-for pipeline in pipelines:
-    pipeline_id = pipeline['id']
-    
+headers = {
+    'Authorization': f'Basic {token}',
+    'Content-Type': 'application/json'
+}
 
-    print(f"Pipeline ID: {pipeline_id}")
-    print("-" * 30)
+# Send GET request to Azure DevOps REST API
+response = requests.get(url, headers=headers)
 
-# Optionally, you can perform further actions with these pipelines if needed.
+if response.status_code == 200:
+    pipelines = response.json()['value']
+    for pipeline in pipelines:
+        pipeline_name = pipeline['name']
+        print(f"Pipeline Name: {pipeline_name}")
+else:
+    print(f"Failed to retrieve pipelines. Status code: {response.status_code}")
