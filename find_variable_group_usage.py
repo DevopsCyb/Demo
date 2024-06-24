@@ -59,12 +59,23 @@ if response.status_code == 200:
         for pipeline in pipelines:
             pipeline_id = pipeline.get('id')
             pipeline_name = pipeline.get('name')
+            pipeline_url = pipeline.get('url')
+            pipeline_revision = pipeline.get('revision')
+            pipeline_created_date = pipeline.get('createdDate')
+            
             variable_groups = get_pipeline_variable_groups(pipeline_id)
+            
             print(f"Pipeline Name: {pipeline_name}")
+            print(f"  ID: {pipeline_id}")
+            print(f"  URL: {pipeline_url}")
+            print(f"  Revision: {pipeline_revision}")
+            print(f"  Created Date: {pipeline_created_date}")
+            
             if variable_groups:
                 print(f"  Variable Groups: {', '.join(variable_groups)}")
             else:
                 print("  No Variable Groups associated.")
+            print()  # Print a blank line for readability
 else:
     print(f"Failed to retrieve pipelines. Status code: {response.status_code}")
     print(f"Response content: {response.text}")
