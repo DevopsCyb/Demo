@@ -41,10 +41,6 @@ if __name__ == "__main__":
             "revision": pipeline_details['revision'],
             "description": pipeline_details.get('description', ''),
             "url": pipeline_details['_links']['web']['href'],
-            "trigger": {
-                "type": pipeline_details.get('trigger', {}).get('type', ''),
-                "branchFilters": pipeline_details.get('trigger', {}).get('branchFilters', [])
-            },
             "variables": [
                 {"name": var_name, "value": var_value['value']} 
                 for var_name, var_value in pipeline_details.get('variables', {}).items()
