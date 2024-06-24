@@ -57,7 +57,7 @@ def get_run_stages(run_id):
 
 # Main script
 if __name__ == "__main__":
-    pipeline_id = '12345'  # Replace with your pipeline ID
+    pipeline_id = '1301'  # Replace with your pipeline ID
     pipeline_details = get_pipeline_details(pipeline_id)
     if pipeline_details:
         latest_run_details = get_latest_run_details(pipeline_id)
