@@ -1,8 +1,8 @@
 import requests
 import os
 # Replace with your Azure DevOps organization URL and pipeline ID
-org_url = "https://dev.azure.com/cybagedevops"
-pipeline_id = 1301
+org_url =  os.getenv('ORGANIZATION')
+pipeline_id =  os.getenv('PIPELINE_ID')
 
 # API endpoint to get pipeline details
 url = f"{org_url}/_apis/pipelines/{pipeline_id}?api-version=6.0-preview.1"
