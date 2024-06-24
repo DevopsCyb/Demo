@@ -1,6 +1,7 @@
 import requests
 import base64
 import os
+import json
 
 # Replace with your Azure DevOps organization URL, project name, and Personal Access Token (PAT)
 organization = 'cybagedevops'
@@ -35,16 +36,7 @@ if __name__ == "__main__":
     pipeline_id = '1301'  # Replace with your pipeline ID
     pipeline_details = get_pipeline_details(pipeline_id)
     if pipeline_details:
-        # Construct pipeline_response excluding 'revision'
-        pipeline_response = {
-            "id": pipeline_details['id'],
-            "name": pipeline_details['name'],
-            "variables": [
-                {"name": var_name, "value": var_value['value']} 
-                for var_name, var_value in pipeline_details.get('variables', {}).items()
-            ]
-        }
-
-        print(pipeline_response)
+        # Print JSON formatted pipeline details
+        print(json.dumps(pipeline_details, indent=2))
     else:
         print("Pipeline details not found.")
