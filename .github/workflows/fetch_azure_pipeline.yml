@@ -21,7 +21,7 @@ jobs:
 
       - name: Run script to fetch pipeline details
         env:
-          ORGANIZATION: cybagedevops
+          ORGANIZATION: https://dev.azure.com/cybagedevops
           PROJECT: MIS
           PIPELINE_ID: 1301
           PAT: ${{ secrets.AZURE_PAT }}
