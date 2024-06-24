@@ -39,8 +39,6 @@ if __name__ == "__main__":
             "id": pipeline_details['id'],
             "name": pipeline_details['name'],
             "revision": pipeline_details['revision'],
-            "description": pipeline_details.get('description', ''),
-            "url": pipeline_details['_links']['web']['href'],
             "variables": [
                 {"name": var_name, "value": var_value['value']} 
                 for var_name, var_value in pipeline_details.get('variables', {}).items()
@@ -50,4 +48,3 @@ if __name__ == "__main__":
         print(pipeline_response)
     else:
         print("Pipeline details not found.")
-
