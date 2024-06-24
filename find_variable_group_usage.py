@@ -5,7 +5,7 @@ import base64
 import yaml
 
 # Fetch environment variables
-organization = 'cybagedevops'
+organization = 'cybagedevops'  # Ensure this is a string
 project = os.getenv('AZURE_DEVOPS_PROJECT')
 pat = os.getenv('AZURE_DEVOPS_PAT')
 
@@ -67,4 +67,4 @@ if response.status_code == 200:
                 print("  No Variable Groups associated.")
 else:
     print(f"Failed to retrieve pipelines. Status code: {response.status_code}")
-    print(f"Response content: {response.text}")  # Print response content for further details
+    print(f"Response content: {response.text}")
