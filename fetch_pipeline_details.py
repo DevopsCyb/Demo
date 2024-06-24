@@ -1,26 +1,32 @@
-import os
 import requests
+import os
+# Replace with your Azure DevOps organization URL and pipeline ID
+org_url = "https://dev.azure.com/cybagedevops"
+pipeline_id = 1301
 
-# Define variables from environment variables
-organization = os.getenv('ORGANIZATION')
-project = os.getenv('PROJECT')
-pipeline_id = os.getenv('PIPELINE_ID')
-pat = os.getenv('PAT')
+# API endpoint to get pipeline details
+url = f"{org_url}/_apis/pipelines/{pipeline_id}?api-version=6.0-preview.1"
 
-# Set up the request URL and headers
-url = f'https://dev.azure.com/{organization}/{project}/_apis/pipelines/{pipeline_id}?api-version=6.0'
+# Replace with your Azure DevOps personal access token
+token = os.getenv('AZURE_DEVOPS_PAT')
+
 headers = {
-    'Content-Type': 'application/json',
-    'Authorization': f'Basic {pat}'
+    "Authorization": f"Basic {token}"
 }
 
-# Make the GET request
+# Make GET request to fetch pipeline details
 response = requests.get(url, headers=headers)
 
-# Check response status and print details
+# Check if request was successful
 if response.status_code == 200:
-    pipeline_details = response.json()
-    print(pipeline_details)
+    pipeline_data = response.json()
+    
+    # Example: Printing variables from pipeline data
+    variables = pipeline_data.get("variables", {})
+    for name, var_data in variables.items():
+        value = var_data.get("value", "")
+        is_secret = var_data.get("isSecret", False)
+        print(f"Variable: {name}, Value: {value}, Secret: {is_secret}")
 else:
-    print(f'Error: {response.status_code}')
-    print(response.text)
+    print(f"Failed to fetch pipeline details. Status code: {response.status_code}")
+
