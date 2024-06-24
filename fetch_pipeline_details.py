@@ -8,7 +8,7 @@ pipeline_id = 1301
 url = f"{org_url}/_apis/pipelines/{pipeline_id}?api-version=6.0-preview.1"
 
 # Replace with your Azure DevOps personal access token
-token = os.getenv('AZURE_DEVOPS_PAT')
+token = os.getenv('PAT')
 
 headers = {
     "Authorization": f"Basic {token}"
