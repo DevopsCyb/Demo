@@ -5,8 +5,8 @@ import base64
 import yaml
 
 # Fetch environment variables
-organization = cybagedevops
-project = MIS
+organization = os.getenv('AZURE_DEVOPS_ORGANIZATION')
+project = os.getenv('AZURE_DEVOPS_PROJECT')
 pat = os.getenv('AZURE_DEVOPS_PAT')
 
 # Check if environment variables are set
