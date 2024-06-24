@@ -1,0 +1,28 @@
+name: Fetch Azure Pipeline Details
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fetch-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Run script to fetch pipeline details
+        env:
+          ORGANIZATION: cybagedevops
+          PROJECT: MIS
+          PIPELINE_ID: 1301
+          PAT: ${{ secrets.AZURE_PAT }}
+        run: python fetch_pipeline_details.py
