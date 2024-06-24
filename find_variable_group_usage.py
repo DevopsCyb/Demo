@@ -5,7 +5,7 @@ import base64
 import yaml
 
 # Fetch environment variables
-organization = os.getenv('AZURE_DEVOPS_ORGANIZATION')
+organization = cybagedevops
 project = os.getenv('AZURE_DEVOPS_PROJECT')
 pat = os.getenv('AZURE_DEVOPS_PAT')
 
