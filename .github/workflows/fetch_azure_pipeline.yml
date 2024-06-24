@@ -23,6 +23,6 @@ jobs:
         env:
           ORGANIZATION: https://dev.azure.com/cybagedevops
           PROJECT: MIS
-          PIPELINE_ID: 1301
+          PIPELINE_ID: 1302
           PAT: ${{ secrets.AZURE_PAT }}
         run: python fetch_pipeline_details.py
