@@ -1,42 +1,69 @@
 import requests
-import base64
 import os
-import json
+import base64
+import yaml
 
-# Replace with your Azure DevOps organization URL, project name, and Personal Access Token (PAT)
-organization = 'cybagedevops'
-project = 'MIS'
-personal_access_token = os.getenv('AZURE_DEVOPS_PAT')
+# Fetch environment variables
+organization = cybagedevops
+project = MIS
+pat = os.getenv('AZURE_DEVOPS_PAT')
+
+# Check if environment variables are set
+if not organization or not project or not pat:
+    print("Environment variables AZURE_DEVOPS_ORGANIZATION, AZURE_DEVOPS_PROJECT, or AZURE_DEVOPS_PAT are not set.")
+    exit(1)
 
 # Base URL for Azure DevOps REST API
 base_url = f'https://dev.azure.com/{organization}/{project}/_apis'
 
-# Encode the PAT to base64 format
-encoded_pat = base64.b64encode(f":{personal_access_token}".encode("utf-8")).decode("utf-8")
+# Encode PAT for Basic Auth
+encoded_pat = base64.b64encode(f':{pat}'.encode()).decode()
 
-# Define headers and authentication
+# Endpoint to list pipelines
+pipelines_url = f"{base_url}/pipelines?api-version=6.0-preview.1"
+
 headers = {
-    'Content-Type': 'application/json',
-    'Authorization': f'Basic {encoded_pat}'
+    'Authorization': f'Basic {encoded_pat}',
+    'Content-Type': 'application/json'
 }
 
-# Function to fetch pipeline details
-def get_pipeline_details(pipeline_id):
-    pipeline_url = f'{base_url}/pipelines/{pipeline_id}?api-version=6.0'
-    response = requests.get(pipeline_url, headers=headers)
+# Debugging: Print request details
+print(f"Requesting URL: {pipelines_url}")
+print(f"Headers: {headers}")
 
+# Send GET request to Azure DevOps REST API to list pipelines
+response = requests.get(pipelines_url, headers=headers)
+
+def get_pipeline_variable_groups(pipeline_id):
+    # URL to get pipeline definition YAML
+    pipeline_def_url = f"{base_url}/pipelines/{pipeline_id}/yaml?api-version=6.0-preview.1"
+    response = requests.get(pipeline_def_url, headers=headers)
     if response.status_code == 200:
-        return response.json()
-    else:
-        print(f"Failed to fetch pipeline details: {response.status_code} - {response.text}")
-        return None
+        pipeline_yaml = response.text
+        pipeline_dict = yaml.safe_load(pipeline_yaml)
+        variable_groups = []
+        if 'variables' in pipeline_dict:
+            for var in pipeline_dict['variables']:
+                if 'group' in var:
+                    variable_groups.append(var['group'])
+        return variable_groups
+    return []
 
-# Main script
-if __name__ == "__main__":
-    pipeline_id = '1301'  # Replace with your pipeline ID
-    pipeline_details = get_pipeline_details(pipeline_id)
-    if pipeline_details:
-        # Print JSON formatted pipeline details
-        print(json.dumps(pipeline_details, indent=2))
+# Check response status and handle accordingly
+if response.status_code == 200:
+    pipelines = response.json().get('value', [])
+    if not pipelines:
+        print("No pipelines found.")
     else:
-        print("Pipeline details not found.")
+        for pipeline in pipelines:
+            pipeline_id = pipeline.get('id')
+            pipeline_name = pipeline.get('name')
+            variable_groups = get_pipeline_variable_groups(pipeline_id)
+            print(f"Pipeline Name: {pipeline_name}")
+            if variable_groups:
+                print(f"  Variable Groups: {', '.join(variable_groups)}")
+            else:
+                print("  No Variable Groups associated.")
+else:
+    print(f"Failed to retrieve pipelines. Status code: {response.status_code}")
+    print(f"Response content: {response.text}")  # Print response content for further details
