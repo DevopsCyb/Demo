@@ -8,7 +8,7 @@ import json
 # Azure DevOps organization URL and PAT (Personal Access Token)
 organization = os.getenv('AZURE_ORG')
 project = os.getenv('AZURE_PROJECT')
-pipeline_id =os.getenv('VARIABLE_GROUP_ID')
+pipeline_id = os.getenv('VARIABLE_GROUP_ID')
 api_version = "7.1"
 pat = os.getenv('AZURE_PAT')
 
@@ -18,7 +18,7 @@ url = f"https://dev.azure.com/{organization}/{project}/_apis/pipelines/{pipeline
 # Set headers and make the request
 headers = {
     "Content-Type": "application/json",
-    "Authorization": f"Basic {pat}"
+    "Authorization": f"Basic {base64.b64encode((f':{pat}').encode()).decode()}"
 }
 
 response = requests.get(url, headers=headers)
