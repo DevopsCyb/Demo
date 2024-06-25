@@ -2,7 +2,7 @@
 
 import requests
 import json
-
+import os
 # Azure DevOps organization URL and PAT (Personal Access Token)
 organization = os.getenv('AZURE_ORG')
 project = os.getenv('AZURE_PROJECT')
