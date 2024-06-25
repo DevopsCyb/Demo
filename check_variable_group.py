@@ -1,56 +1,37 @@
 #!/usr/bin/env python
 
-import os
 import requests
-from yaml import safe_load
+import json
 
-# Azure DevOps organization and project
+# Azure DevOps organization URL and PAT (Personal Access Token)
 organization = os.getenv('AZURE_ORG')
 project = os.getenv('AZURE_PROJECT')
-
-# Personal Access Token
+pipeline_id =os.getenv('VARIABLE_GROUP_ID')
+api_version = "7.1"
 pat = os.getenv('AZURE_PAT')
 
-# Headers for authentication
+# Construct the API URL
+url = f"https://dev.azure.com/{organization}/{project}/_apis/pipelines/{pipeline_id}?api-version={api_version}"
+
+# Set headers and make the request
 headers = {
-    'Content-Type': 'application/json',
-    'Authorization': f'Basic {pat}'
+    "Content-Type": "application/json",
+    "Authorization": f"Basic {pat}"
 }
 
-# Get all pipelines
-pipelines_url = f'https://dev.azure.com/{organization}/{project}/_apis/pipelines?api-version=7.1-preview.1'
-pipelines_response = requests.get(pipelines_url, headers=headers)
-pipelines = pipelines_response.json()['value']
+response = requests.get(url, headers=headers)
 
-# Variable group to search for
-variable_group_name = os.getenv('VARIABLE_GROUP_NAME')
+# Check if the request was successful
+if response.status_code == 200:
+    # Parse the JSON response
+    pipeline_data = response.json()
 
-# Function to check if variable group is used in YAML
-def is_variable_group_used(yaml_content, variable_group_name):
-    yaml_data = safe_load(yaml_content)
-    variables = yaml_data.get('variables', [])
-    for variable in variables:
-        if 'group' in variable and variable['group'] == variable_group_name:
-            return True
-    return False
-
-# List to store pipelines using the variable group
-pipelines_using_variable_group = []
-
-# Check each pipeline for the variable group usage
-for pipeline in pipelines:
-    pipeline_id = pipeline['id']
-    yaml_url = f'https://dev.azure.com/{organization}/{project}/_apis/pipelines/{pipeline_id}/yaml?api-version=7.1-preview.1'
-    yaml_response = requests.get(yaml_url, headers=headers)
-    yaml_content = yaml_response.text
-    
-    if is_variable_group_used(yaml_content, variable_group_name):
-        pipelines_using_variable_group.append(pipeline)
-
-# Output the pipelines using the variable group
-if pipelines_using_variable_group:
-    print("Pipelines using the variable group:")
-    for pipeline in pipelines_using_variable_group:
-        print(f"Pipeline ID: {pipeline['id']}, Name: {pipeline['name']}")
+    # Extract the names of variable groups
+    if 'variables' in pipeline_data and 'variableGroups' in pipeline_data['variables']:
+        variable_groups = pipeline_data['variables']['variableGroups']
+        for group in variable_groups:
+            print(group['name'])
+    else:
+        print("No variable groups found for this pipeline.")
 else:
-    print("No pipelines found using the variable group.")
+    print(f"Failed to fetch pipeline details. Status code: {response.status_code}")
