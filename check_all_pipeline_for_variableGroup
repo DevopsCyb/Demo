@@ -1,0 +1,38 @@
+#powershell 
+#line number  12 --  organisation name
+#line number  13-- project name
+#line number  28-- Variable group name
+
+#>>>>>start from here 
+  
+az login 
+
+az extension add --name azure-devops
+
+$org = "https://dev.azure.com/cybagedevops"
+$project = "MIS"
+
+# Loop through each pipeline and run az pipelines show command using the ID
+$pipelines = az pipelines list --org $org --project $project --query "[].{name:name, id:id}" -o json | ConvertFrom-Json
+
+foreach ($pipeline in $pipelines) {
+    try {
+        # Capture the output of az pipelines show using the pipeline ID
+        $pipelineDetails = az pipelines show --id $pipeline.id --org $org --project $project --query "{name:name, variableGroups:variableGroups[0].name}" -o json | ConvertFrom-Json
+
+        # Extract pipeline name and variableGroups
+        $pipelineName = $pipelineDetails.name
+        $pipelineVariable = $pipelineDetails.variableGroups
+
+        # Check if variableGroups is not null and matches ""
+        if ($pipelineVariable -ne $null -and $pipelineVariable -eq "MIS-DOCKER-NILESH") {
+            # Format the output
+            $output = "Pipeline: $pipelineName`nVariableGroup: $pipelineVariable`n----------------------`n"
+
+            # Print or do something with the output
+            Write-Output $output
+        }
+    } catch {
+        Write-Error "Failed to process pipeline: $($pipeline.name). Error: $_"
+    }
+}
